@@ -100,7 +100,7 @@
                 
                 <span>
                     <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                    2k
+                    2.3k
                 </span>
                 
                 
@@ -151,20 +151,34 @@
 <p>​        使用git将仓库克隆到本地，在仓库中加入需要保存到图床的图片，然后push到Gitee即可。该步骤是Git的常规操作，也不再详细介绍。</p>
 <p>3、使用markdown语法调用图片</p>
 <p>​    调用图片的地址格式如下表所示：</p>
+<style>
+table th:first-of-type {
+    width: 50%;
+}
+table th:nth-of-type(2) {
+    width: 15%;
+}
+table th:nth-of-type(3) {
+    width: 15%;
+}
+table th:nth-of-type(4) {
+    width: 20%;
+}
+</style>
 <table>
 <thead>
 <tr>
 <th align="center">仓库地址</th>
-<th>固定格式</th>
-<th>分支名</th>
-<th>路径及文件名</th>
+<th align="center">固定格式</th>
+<th align="center">分支名</th>
+<th align="center">路径及文件名</th>
 </tr>
 </thead>
 <tbody><tr>
 <td align="center">http：//gitee.com/hekuzhengfeng/pictures/</td>
-<td>raw/</td>
-<td>master/</td>
-<td>pic/test.png</td>
+<td align="center">raw/</td>
+<td align="center">master/</td>
+<td align="center">pic/test.png</td>
 </tr>
 </tbody></table>
 <p>​        如下示例，图片存放在pictures仓库中，master分支下的pic文件夹下，图片文件名为test.png，调用图片的地址为：<a href="http://gitee.com/hekuzhengfeng/pictures/raw/master/pic/test.png" target="_blank" rel="noopener">http://gitee.com/hekuzhengfeng/pictures/raw/master/pic/test.png</a></p>
