@@ -10,8 +10,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="Hekuzhengfeng Blog,"> 
-    <meta name="description" content="基于Gitee搭建免费图床​        本文简单介绍如何基于Gitee搭建免费图床。
-1、为什么要基于Gitee搭建免费图床​        简单讲，主要是因为大家熟悉的免费图床各有不足之处。例,"> 
+    <meta name="description" content="本文简单介绍如何基于Gitee搭建免费图床。
+
+
+基于Gitee搭建免费图床1、为什么要基于Gitee搭建免费图床​        简单讲，主要是因为大家熟悉的免费图床各有不足之处。例如：七牛云回收,"> 
     <meta name="author" content="何苦争锋"> 
     <link rel="alternative" href="atom.xml" title="何苦争锋" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -140,8 +142,10 @@
 <div class="article">
     <div class='main'>
         <div class="content markdown animated fadeIn">
-            <h1 id="基于Gitee搭建免费图床"><a href="#基于Gitee搭建免费图床" class="headerlink" title="基于Gitee搭建免费图床"></a>基于Gitee搭建免费图床</h1><p>​        本文简单介绍如何基于Gitee搭建免费图床。</p>
-<h2 id="1、为什么要基于Gitee搭建免费图床"><a href="#1、为什么要基于Gitee搭建免费图床" class="headerlink" title="1、为什么要基于Gitee搭建免费图床"></a>1、为什么要基于Gitee搭建免费图床</h2><p>​        简单讲，主要是因为大家熟悉的免费图床各有不足之处。例如：七牛云回收了测试域名，配置自定义域名需要绑定主机（<a href="https://www.cnblogs.com/aflyun/p/10010319.html" target="_blank" rel="noopener">参考：【教程】使用gitee搭建免费图床</a>）；基于 GitHub 的图床访问速度则是硬伤，经常遇到图片加载不出来的问题。</p>
+            <p>本文简单介绍如何基于Gitee搭建免费图床。</p>
+<a id="more"></a>
+
+<h1 id="基于Gitee搭建免费图床"><a href="#基于Gitee搭建免费图床" class="headerlink" title="基于Gitee搭建免费图床"></a>基于Gitee搭建免费图床</h1><h2 id="1、为什么要基于Gitee搭建免费图床"><a href="#1、为什么要基于Gitee搭建免费图床" class="headerlink" title="1、为什么要基于Gitee搭建免费图床"></a>1、为什么要基于Gitee搭建免费图床</h2><p>​        简单讲，主要是因为大家熟悉的免费图床各有不足之处。例如：七牛云回收了测试域名，配置自定义域名需要绑定主机（<a href="https://www.cnblogs.com/aflyun/p/10010319.html" target="_blank" rel="noopener">参考：【教程】使用gitee搭建免费图床</a>）；基于 GitHub 的图床访问速度则是硬伤，经常遇到图片加载不出来的问题。</p>
 <h2 id="2、准备工作"><a href="#2、准备工作" class="headerlink" title="2、准备工作"></a>2、准备工作</h2><p>1、一个Gitee账户</p>
 <p>2、配置好SSH</p>
 <p>3、准备好Git环境</p>
@@ -179,11 +183,11 @@ table th:nth-of-type(4) {
 <td align="center">http：//gitee.com/hekuzhengfeng/pictures/</td>
 <td align="center">raw/</td>
 <td align="center">master/</td>
-<td align="center">pic/test.png</td>
+<td align="center">pic/hekuzhengfeng.png</td>
 </tr>
 </tbody></table>
-<p>​        如下示例，图片存放在pictures仓库中，master分支下的pic文件夹下，图片文件名为test.png，调用图片的地址为：<a href="http://gitee.com/hekuzhengfeng/pictures/raw/master/pic/test.png" target="_blank" rel="noopener">http://gitee.com/hekuzhengfeng/pictures/raw/master/pic/test.png</a></p>
-<p><cneter><img src="http://gitee.com/hekuzhengfeng/pictures/raw/master/pic/test.png" /></center></p>
+<p>​        如下示例，图片存放在pictures仓库中，master分支下的pic文件夹下，图片文件名为test.png，调用图片的地址为：<a href="http://gitee.com/hekuzhengfeng/pictures/raw/master/pic/hekuzhengfeng.png" target="_blank" rel="noopener">http://gitee.com/hekuzhengfeng/pictures/raw/master/pic/hekuzhengfeng.png</a></p>
+<p><cneter><img src="http://gitee.com/hekuzhengfeng/pictures/raw/master/pic/hekuzhengfeng.png" /></center></p>
 <p>​        </p>
 <h2 id="4、为什么有这篇教程"><a href="#4、为什么有这篇教程" class="headerlink" title="4、为什么有这篇教程"></a>4、为什么有这篇教程</h2><p>​        第一节中已经链接了一篇基于gitee搭建图床的教程，但是链接中的教程使用了gitee的Pages服务，这样可以搭建一个可视化的图床，但实测每次添加图片（或者其他操作如更改图片名称等）均需要重新进行部署（不排除自己操作有问题）。Gitee Pages可以在提交（push）后自动部署，但该功能需要付费。而本文种介绍的方法则直接push后即可调用图片，无须手动重新部署。</p>
 <h2 id="5、清除图床上的图片"><a href="#5、清除图床上的图片" class="headerlink" title="5、清除图床上的图片"></a>5、清除图床上的图片</h2>
