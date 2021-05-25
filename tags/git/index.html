@@ -159,6 +159,11 @@
             </span>
             
             
+            <span id="/2021/05/15/基于Database-Library管理Altium-Designer库文件/" class="leancloud_visitors" data-flag-title="">
+                <b class="iconfont icon-read"></b> <i>阅读次数</i>
+                <span class="leancloud-visitors-count">1000000</span>
+            </span>
+            
         </p>
         
         
@@ -222,6 +227,11 @@
                         1 mins.
                     </span>
                 
+                
+                    <span id="/2020/02/11/git相关命令记录/" class="leancloud_visitors" data-flag-title="">
+                        <b class="iconfont icon-read"></b> <i>阅读次数</i>
+                        <span class="leancloud-visitors-count">1000000</span>
+                    </span>
                 
             </p>
             
@@ -341,13 +351,6 @@ git config --global core.quotepath false</code></pre>
   }
 </script>
 
-
-
-    
-<link rel="stylesheet" href="//cdn.bootcss.com/gitalk/1.5.0/gitalk.min.css">
-
-    
-<script src="//cdn.bootcss.com/gitalk/1.5.0/gitalk.min.js"></script>
 
 
 
@@ -499,6 +502,40 @@ git config --global core.quotepath false</code></pre>
     }
 </script>
 
+
+    
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+    <script>
+
+        var valine = new Valine();
+
+        function initValine(path) {
+            if (!path) path = window.location.pathname;
+            let language = 'zh-CN';
+            if (!language) {
+                language = 'en';
+            } else {
+                language = language.toLowerCase();
+            }
+            valine.init({
+                el: '#vcomments',
+                appId: 'O9tcndGBPvf1Ftl98yMpoSJG-gzGzoHsz',
+                appKey: 'z9MlP4K2ROAyJsjhscimkcG3',
+                notify: 'false',
+                verify: 'false',
+                avatar: 'mp',
+                placeholder: 'Leave your throughs behind~',
+                visitor: 'true',
+                path: path,
+                lang: language
+            });
+        }
+
+        $(document).ready(function () {
+            initValine();
+        });
+    </script>
 
 
 
