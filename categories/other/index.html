@@ -71,7 +71,7 @@
         
     </ul>
     <p class="copyright" id="copyright">
-        &copy; 2020 何苦争锋.
+        &copy; 2021 何苦争锋.
         Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a>
         Theme <a href="https://github.com/TriDiamond/hexo-theme-obsidian" title="Obsidian" target="_blank" rel="noopener">Obsidian</a>
     </p>
@@ -169,7 +169,35 @@
             <p>本文简单介绍如何基于Gitee搭建免费图床。</p>
 <a id="more"></a>
 
-<p>​        简单讲，主要是因为大家熟悉的免费图床各有不足之处...</p>
+<p>​        简单讲，主要是因为大家熟悉的免费图床各有不足之处。例如：七牛云回收了测试域名，配置自定义域名需要绑定主机（<a href="https://www.cnblogs.com/aflyun/p/10010319.html" target="_blank" rel="noopener">参考：【教程】使用gitee搭建免费图床</a>）；基于 GitHub 的图床访问速度则是硬伤，经常遇到图片加载不出来的问题。</p>
+<p>1、一个Gitee账户</p>
+<p>2、配置好SSH</p>
+<p>3、准备好Git环境</p>
+<p>1、在Gitee上新建一个仓库</p>
+<p>​        该步骤是Gitee的常规操作，不再详细介绍，<strong>注意要创建一个公开仓库。</strong></p>
+<p>2、上传图片</p>
+<p>​        使用git将仓库克隆到本地，在仓库中加入需要保存到图床的图片，然后push到Gitee即可。该步骤是Git的常规操作，也不再详细介绍。</p>
+<p>3、使用markdown语法调用图片</p>
+<p>​    调用图片的地址格式如下表所示：</p>
+
+
+<table>
+<thead>
+<tr>
+<th align="center">仓库地址</th>
+<th align="center">固定格式</th>
+<th align="center">分支名</th>
+<th align="center">路径及文件名</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">http：//gitee.com/hekuzhengfeng/pictures/</td>
+<td align="center">raw/</td>
+<td align="center">master/</td>
+<td align="center">pic/hekuzhengfeng.png</td>
+</tr>
+</tbody></table>
+<p>​        如下示例，图片存放在pictures仓库中，master分支下的pic文件夹下，图片文件名为test.png...</p>
             
             <span class="read-more"><a href="/2020/02/27/%E5%9F%BA%E4%BA%8EGitee%E6%90%AD%E5%BB%BA%E5%85%8D%E8%B4%B9%E5%9B%BE%E5%BA%8A/" title="查看全文" class="posttitle">查看全文</a>
                 <b class="iconfont icon-arrow-right- gradient-text"></b></span>
@@ -205,7 +233,7 @@
 </body>
 <footer>
     <p class="copyright" id="copyright">
-        &copy; 2020
+        &copy; 2021
         <span class="gradient-text">
             何苦争锋
         </span>.
@@ -214,7 +242,7 @@
         <span class="gradient-text">
             <a href="https://github.com/TriDiamond/hexo-theme-obsidian" title="Obsidian" target="_blank" rel="noopener">Obsidian</a>
         </span>
-        <small><a href="https://github.com/TriDiamond/hexo-theme-obsidian/blob/master/CHANGELOG.md" title="v1.4.3" target="_blank" rel="noopener">v1.4.3</a></small>
+        <small><a href="https://github.com/TriDiamond/hexo-theme-obsidian/blob/master/CHANGELOG.md" title="v1.4.4" target="_blank" rel="noopener">v1.4.4</a></small>
     </p>
 </footer>
 

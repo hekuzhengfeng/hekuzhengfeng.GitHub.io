@@ -71,7 +71,7 @@
         
     </ul>
     <p class="copyright" id="copyright">
-        &copy; 2020 何苦争锋.
+        &copy; 2021 何苦争锋.
         Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a>
         Theme <a href="https://github.com/TriDiamond/hexo-theme-obsidian" title="Obsidian" target="_blank" rel="noopener">Obsidian</a>
     </p>
@@ -166,7 +166,27 @@
         
         <div class="md-content animated fadeIn">
             
-            <pre><code class="git">ssh-keygen -t rsa -C &quot;your_email@email.com&qu...</code></pre>
+            <pre><code class="git">ssh-keygen -t rsa -C &quot;your_email@email.com&quot; -f ~/.ssh/custom_rsa</code></pre>
+<p>##git常用命令</p>
+<pre><code class="git">git clone
+git pull
+git init
+git fetch</code></pre>
+<pre><code class="git">#查看本地+远程所有分支的全部提交以及关系
+git log --graph --all
+
+#查看本地+远程所有分支的全部提交以及关系
+gitk --all</code></pre>
+<pre><code class="git">#删除远程仓库origin上的分支test
+git push origin --delete test</code></pre>
+<pre><code class="git">#创建切换一个空分支，但工作区所有文件保持不变
+git checkout --orphan latest_branch
+
+#撤回还未add的文件修改
+git checkout .</code></pre>
+<pre><code class="git">#解决git status无法显示中文问题
+git config --global core.quotepath false</code></pre>
+
             
             <span class="read-more"><a href="/2020/02/11/git%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4%E8%AE%B0%E5%BD%95/" title="查看全文" class="posttitle">查看全文</a>
                 <b class="iconfont icon-arrow-right- gradient-text"></b></span>
@@ -202,7 +222,7 @@
 </body>
 <footer>
     <p class="copyright" id="copyright">
-        &copy; 2020
+        &copy; 2021
         <span class="gradient-text">
             何苦争锋
         </span>.
@@ -211,7 +231,7 @@
         <span class="gradient-text">
             <a href="https://github.com/TriDiamond/hexo-theme-obsidian" title="Obsidian" target="_blank" rel="noopener">Obsidian</a>
         </span>
-        <small><a href="https://github.com/TriDiamond/hexo-theme-obsidian/blob/master/CHANGELOG.md" title="v1.4.3" target="_blank" rel="noopener">v1.4.3</a></small>
+        <small><a href="https://github.com/TriDiamond/hexo-theme-obsidian/blob/master/CHANGELOG.md" title="v1.4.4" target="_blank" rel="noopener">v1.4.4</a></small>
     </p>
 </footer>
 
