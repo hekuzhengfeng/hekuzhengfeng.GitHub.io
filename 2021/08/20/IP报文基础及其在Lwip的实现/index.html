@@ -1,0 +1,585 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IP报文基础及其在Lwip的实现 - 何苦争锋</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Hekuzhengfeng Blog,"> 
+    <meta name="description" content="&amp;emsp;&amp;emsp;本文主要介绍IP数据报的格式，以及IP相关功能在Lwip中的实现方式，希望能对同样在学习Lwip的小伙伴们有所帮助。
+
+
+1. IP的背景&amp;emsp;&amp;emsp;IP协议是T,"> 
+    <meta name="author" content="何苦争锋"> 
+    <link rel="alternative" href="atom.xml" title="何苦争锋" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    <link href="https://fonts.loli.net/css?family=Roboto+Mono|Rubik&display=swap" rel="stylesheet">
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1429596_nzgqgvnmkjb.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
+
+    
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/codemirror.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/theme/dracula.css">
+
+    
+<link rel="stylesheet" href="/css/obsidian.css">
+
+    
+<link rel="stylesheet" href="/css/ball-atom.min.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body class="loading">
+    <div class="loader">
+        <div class="la-ball-atom la-2x">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <span id="config-title" style="display:none">何苦争锋</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div class="scrollbar gradient-bg-rev"></div>
+<div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <div class="navigation animated fadeIn fast delay-1s">
+        <img id="home-icon" class="icon-home" src="/img/favicon.png" alt="" data-url="https://hekuzhengfeng.github.io">
+        <div id="play-icon" title="Play/Pause" class="iconfont icon-play"></div>
+        <h3 class="subtitle">IP报文基础及其在Lwip的实现</h3>
+        <div class="social">
+            <!--        <div class="like-icon">-->
+            <!--            <a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+            <!--        </div>-->
+            <div>
+                <div class="share">
+                    
+                        <a href="javascript:;" class="iconfont icon-share1"></a>
+                        <div class="share-component-cc" data-disabled="facebook,douban,linkedin,diandian,tencent,google"></div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="section">
+        <div class=article-header-wrapper>
+    <div class="article-header">
+        <div class="article-cover animated fadeIn" style="
+            animation-delay: 600ms;
+            animation-duration: 1.2s;
+            background-image: 
+                radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+                url(/img/cover.jpg) ">
+        </div>
+        <div class="else">
+            <p class="animated fadeInDown">
+                
+                <a href="/categories/嵌入式"><b>「
+                    </b>嵌入式<b> 」</b></a>
+                
+                八月 20, 2021
+            </p>
+            <h3 class="post-title animated fadeInDown"><a href="/2021/08/20/IP%E6%8A%A5%E6%96%87%E5%9F%BA%E7%A1%80%E5%8F%8A%E5%85%B6%E5%9C%A8Lwip%E7%9A%84%E5%AE%9E%E7%8E%B0/" title="IP报文基础及其在Lwip的实现" class="">IP报文基础及其在Lwip的实现</a>
+            </h3>
+            
+            <p class="post-count animated fadeInDown">
+                
+                <span>
+                    <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                    10k
+                </span>
+                
+                
+                <span>
+                    <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                    9 mins.
+                </span>
+                
+                
+                <span id="/2021/08/20/IP报文基础及其在Lwip的实现/" class="leancloud_visitors" data-flag-title="IP报文基础及其在Lwip的实现">
+                    <b class="iconfont icon-read"></b> <i>阅读次数</i>
+                    <span class="leancloud-visitors-count">1000000</span>
+                </span>
+                
+                
+            </p>
+            
+            
+            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/IP/" rel="tag">IP</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/LWIP/" rel="tag">LWIP</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/RT-THREAD/" rel="tag">RT-THREAD</a></li></ul>
+            
+        </div>
+    </div>
+</div>
+
+<div class="screen-gradient-after">
+    <div class="screen-gradient-content">
+        <div class="screen-gradient-content-inside">
+            <div class="bold-underline-links screen-gradient-sponsor">
+                <p>
+                    <span class="animated fadeIn delay-1s"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="article">
+    <div class='main'>
+        <div class="content markdown animated fadeIn">
+            <p>&emsp;&emsp;本文主要介绍IP数据报的格式，以及IP相关功能在Lwip中的实现方式，希望能对同样在学习Lwip的小伙伴们有所帮助。</p>
+<body>
+
+<h1 id="1-IP的背景"><a href="#1-IP的背景" class="headerlink" title="1. IP的背景"></a>1. IP的背景</h1><p>&emsp;&emsp;IP协议是TCP/IP协议中最为核心的协议，所有的TCP、UDP、ICMP及IGMP数据都已IP数据报格式传输。IP协议在 TCP/IP协议族的分层中属于网络层，不难理解，IP的主要作用有两个：其一是对上层协议<sup>[1]</sup>的数据进行封装（增加IP首部），然后交给链路层协议进行发送；其二是对链路层接收到的数据进行解析，并根据解析结果将数据交给对应的上层协议进行处理。</p>
+<h1 id="2-IP基础知识介绍"><a href="#2-IP基础知识介绍" class="headerlink" title="2. IP基础知识介绍"></a>2. IP基础知识介绍</h1><h2 id="2-1-IP数据报的格式"><a href="#2-1-IP数据报的格式" class="headerlink" title="2.1 IP数据报的格式"></a>2.1 IP数据报的格式</h2><p>&emsp;&emsp;IP数据报的格式主要包含IP首部和数据，通常情况下，IP首部的长度为20字节（含有选项字段的除外），具体如下图所示：</p>
+<center><img src="http://gitee.com/hekuzhengfeng/pictures/raw/master/pic/image-20210802005825369-16278371212541.png" alt=IP数据报格式></center>
+
+<h3 id="2-1-1-版本"><a href="#2-1-1-版本" class="headerlink" title="2.1.1 版本"></a>2.1.1 版本</h3><p>&emsp;&emsp;协议版本号，当前普遍应用的IP协议版本号是4，因此也常称为IPv4。</p>
+<h3 id="2-1-2-首部长度"><a href="#2-1-2-首部长度" class="headerlink" title="2.1.2 首部长度"></a>2.1.2 首部长度</h3><p>&emsp;&emsp;首部长度即IP首部所占用的32bit字的数目。因为首部长度是一个4bit段，其最大值是15，也就意味着IP首部的最大长度是60字节。</p>
+<h3 id="2-1-3-服务类型（TOS）"><a href="#2-1-3-服务类型（TOS）" class="headerlink" title="2.1.3 服务类型（TOS）"></a>2.1.3 服务类型（TOS）</h3><p>&emsp;&emsp;服务类型字段长8位，最初的TOS字段中最高3位表示优先权，随后的4位表示服务类型，最后一位保留，恒设置为0。</p>
+<p>&emsp;&emsp;当前的服务类型字段已经作为区分服务（Diffserv）架构的一部分被重新定义了，重定义的服务类型字段中前6位构成了区分代码点（DiffServ Code Point, DSCP），后2位用于显示拥塞通知（Explicit Congestion Notification, ECN）。这两个概念不是很易懂，在Lwip中，该字段由上层协议设定，经过在windows系统下的随机抓包发现，该字段通常设置位0x00，因此对该字段不再深究。</p>
+<h3 id="2-1-4-总长度"><a href="#2-1-4-总长度" class="headerlink" title="2.1.4 总长度"></a>2.1.4 总长度</h3><p>&emsp;&emsp;总长度即整个IP数据报的长度，单位是字节。因为总长度是一个16位字段，其最大值是65535，所以IP数据报的最大长度位65535字节。利用总长度和首部长度两个字段就可以知道IP数据报中数据的起始位置和长度。</p>
+<blockquote>
+<p>注意总长度和首部长度的单位不同，总长度的单位是字节，而首部长度的单位是32位字。</p>
+</blockquote>
+<h3 id="2-1-5-标识"><a href="#2-1-5-标识" class="headerlink" title="2.1.5 标识"></a>2.1.5 标识</h3><p>&emsp;&emsp;标识字段唯一的标识发送的每一份数据报，通常每发送一份报文它的值就会加1。在Lwip的源文件”ip4.c”中，定义了一个变量<code>static u16_t ip_id</code>用于记录IP数据报的唯一标识，其初始值为0，每次发送IP数据报时都将该变量的值填入IP首部的标识字段中，然后将该变量+1。</p>
+<h3 id="2-1-6-标志"><a href="#2-1-6-标志" class="headerlink" title="2.1.6 标志"></a>2.1.6 标志</h3><p>&emsp;&emsp;标志字段共有3位，其中第1位没有使用。第2位是不分段（DF）位，置1表示路由器不能对数据进行分段处理，如果数据包由于不能被分段而未能被转发，则路由器会丢弃该数据包并向源点发送错误消息。第三位是还有更多分段（MF）位，即表示数据还有其他的分段，当路由器对数据包进行分段时，除最后一个分段外，其他所有的分段MF位都应置1，以便接收端直到接收到MF位为0的分段为止。</p>
+<h3 id="2-1-7-生存时间（TTL）"><a href="#2-1-7-生存时间（TTL）" class="headerlink" title="2.1.7 生存时间（TTL）"></a>2.1.7 生存时间（TTL）</h3><p>&emsp;&emsp;生存时间反应了从源IP到目的IP经过的路由器数量即跳数。在最初创建IP数据报时，TTL被设置为一个特定的值，通常是32或者64，数据报每经过一个路由器，该路由器就将TTL减1，因此可以通过TTL的值推算IP数据报经过的跳数。</p>
+<h3 id="2-1-8-协议"><a href="#2-1-8-协议" class="headerlink" title="2.1.8 协议"></a>2.1.8 协议</h3><p>&emsp;&emsp;协议字段给出了IP协议上层协议的协议号，当前已分配的协议号有100多个，下表列出了一些常见的协议号，更多的协议号可以自百度。</p>
+<table>
+<thead>
+<tr>
+<th>协议号</th>
+<th>协议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Internet消息控制协议（ICMP）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Internet组管理协议（IGMP）</td>
+</tr>
+<tr>
+<td>4</td>
+<td>被IP协议封装的IP</td>
+</tr>
+<tr>
+<td>6</td>
+<td>传输控制协议（TCP）</td>
+</tr>
+<tr>
+<td>17</td>
+<td>用户数据报协议（UDP）</td>
+</tr>
+</tbody></table>
+<h3 id="2-1-9-首部检验和"><a href="#2-1-9-首部检验和" class="headerlink" title="2.1.9 首部检验和"></a>2.1.9 首部检验和</h3><p>&emsp;&emsp;首部检验和是针对IP首部的纠错字段，检验和不计算被封装的数据。检验和的计算方法和验证方法将在后文的代码分析部分进行介绍。</p>
+<h3 id="2-1-10-源地址和目的地址"><a href="#2-1-10-源地址和目的地址" class="headerlink" title="2.1.10 源地址和目的地址"></a>2.1.10 源地址和目的地址</h3><p>&emsp;&emsp;顾名思义，指IP数据报的来源和目的IP地址，我们平时常见的IP地址如“192.168.0.1”是IP地址的点分十进制表示方法，是方便人读写和记忆的，IP地址对于电子设备来说是一个32位的二进制数。</p>
+<h3 id="2-1-11-可选项"><a href="#2-1-11-可选项" class="headerlink" title="2.1.11 可选项"></a>2.1.11 可选项</h3><p>&emsp;&emsp;首先，可选项不是所有IP数据报都有的，可选项可以包含源点产生的信息和路由器产生的信息；其次，可选项的长度必须是32位的整数倍，最长长度是40个字节，这一点从首部长度的定义也可以看得出来，如果长度不是32位的整数倍，可以在结尾补0以满足要求。</p>
+<p>&emsp;&emsp;常用的可选项有安全和处理限制（常用于军事领域）、记录路径、时间戳、宽松的源站选路、严格的源站选路。因为使用频率很低而且并非所有的主机和路由器都支持这些可选项，此处不再详细叙述，感兴趣的小伙伴可以自行查阅资料进行了解。</p>
+<h2 id="2-2-IP地址基础知识"><a href="#2-2-IP地址基础知识" class="headerlink" title="2.2 IP地址基础知识"></a>2.2 IP地址基础知识</h2><p>&emsp;&emsp;前面的已经提到，IP地址的是一个32位的二进制数，为了方便记忆和读写，常用点分十进制的方法来表示IP地址。IP地址中包含了网络号和主机号，可能还包含有子网号，为了能正确的从IP地址中获取网络号、主机号、子网号，还需要有子网掩码的辅助。本小结简要介绍IP的点分十进制表示方法，网络号、主机号、子网号和子网掩码的含义。</p>
+<h3 id="2-2-1-IP地址的点分十进制表示方法"><a href="#2-2-1-IP地址的点分十进制表示方法" class="headerlink" title="2.2.1 IP地址的点分十进制表示方法"></a>2.2.1 IP地址的点分十进制表示方法</h3><p>&emsp;&emsp;为了方便记忆和表述，将32位的IP地址分为4个字节，将每个字节都以十进制表示，在四个字节转换得到的十进制数中间分别加一个点用以区分，这就是我们常见的IP地址的形式。</p>
+<p>&emsp;&emsp;比如面这个IP地址(11000000101010000000000100000001)<sub>2</sub>，直接用二进制表示显得很长，也很难记忆，直接写成10进制数是（3,232,235,777）<sub>10</sub>，写成16进制数是（0xC0A8 0101），都比较难以记忆，而用点分十进制表示方法则可以写成“192.160.1.1”，显然是一个我们经常会接触到的一个IP地址。由此可见，点分十进制表示方法，在日常使用中是非常方便的。</p>
+<h3 id="2-2-2-网络号、主机号和子网号"><a href="#2-2-2-网络号、主机号和子网号" class="headerlink" title="2.2.2 网络号、主机号和子网号"></a>2.2.2 网络号、主机号和子网号</h3><p>&emsp;&emsp;简单的讲，互联网是把一个个小的网络链接起来组成一个庞大的网络，因此要找到一个IP地址，首先要找到这个IP地址处于哪个小的网络中，然后再找到这个IP对应于这个网络中的哪一台主机。因此IP地址就分成了网络号和主机号两个部分。实际上，根据网络号找到一个网络后，这个网络可能会划分成几个更小的网络组成的，也就是说我们还需要再找到该IP属于这个网络的哪一个子网，然后才能找到这台主机。而要找到IP属于哪一个子网，自然也就需要一个子网号。因为不是所有的网络都会划分子网，因此并不是所有的IP地址都包含子网号的。</p>
+<h3 id="2-2-3-IP地址的分类"><a href="#2-2-3-IP地址的分类" class="headerlink" title="2.2.3 IP地址的分类"></a>2.2.3 IP地址的分类</h3><p>&emsp;&emsp;前文提到了IP地址包含了网络号、主机号，可能还有子网号，那么如果我们已知一个IP地址，如何确定这个IP是否含有子网号，它的网络号、子网号（如果有）、主机号分别是什么呢？</p>
+<p>&emsp;&emsp;要解决这个问题，首先要了解IP地址的分类：A类地址、B类地址和C类地址。A类地址的前8位表示网络号，并且其最高位恒位0，因此其高8位转换成十进制的范围是1~126<sup>[2]</sup>，如果用点分十进制的方式表示IP地址，那么A类IP地址的第一段应该在1到126中间；B类地址的前16位表示网络号，其最高l两位恒为(10)<sub>2</sub>，其高8位转换成10进制的范围是128~191；C类地址的前24位表示网络号，其最高三位恒为（110）<sub>2</sub>，高8位转换位10进制的范围是192~223。</p>
+<p>&emsp;&emsp;根据上述规则，就可以确定一个给定IP地址的网络号。</p>
+<h3 id="2-2-4-子网掩码"><a href="#2-2-4-子网掩码" class="headerlink" title="2.2.4 子网掩码"></a>2.2.4 子网掩码</h3><p>&emsp;&emsp;确定一个IP地址的网络号后，还需要确定其子网号和主机号。前文叙述中，有时会把子网号放在主机号之后，这是因为子网号并不总是存在，但在IP地址中的顺序实际上是网络号、子网号（如果有）、主机号。确定网络号后，必须先确定该IP是否含有子网号，子网号是多少（如果有），然后才能获取主机号。</p>
+<p>&emsp;&emsp;要确定IP中的子网号，就需要子网掩码的辅助了。子网掩码也是一个32位的二进制数，并且通常也以点分十进制的方式表示，这一点与IP地址类似。其作用是告诉主机IP地址中有多少位是用来表示子网号的（实际上是告诉主机IP地址中网络号和子网号加起来有多少位），子网掩码中值位1的比特留给网络号和子网号，值为0的比特留给主机号。由于已知网络号的位数，通过子网掩码可以知道网络号和子网号的总位数，自然也就能区分出IP地址中的网络号、子网号和主机号了。</p>
+<p>&emsp;&emsp;以上文提到的IP地址“192.168.1.1”为例，假设其子网掩码为“255.255.255.0”。首先根据第一段的值“192”可以确定该IP地址属于C类IP，有24位表示网络号，其网络号位“192.168.1”。子网掩码的高24位为1，低8位为0，说明网络号和子网号加起来共计24位，也就是说这里没有进行子网划分，那么其主机号就是“1”。</p>
+<p>&emsp;&emsp;因为IP地址总是按网络号、子网号、主机号排列的，不难理解子网掩码的一个特征：高位是连续的1，低位是连续的0。在Lwip的实现中，“ip4_aaddr.c”中有一个检验子网掩码合法性的函数<code>ip4_addr_netmask_valid</code>，就是利用这个特征，对于一个待检验的数，从最高位起，找到第一个0，然后再检查第一个0后面还有没有1，如果没有，说明待检验数是一个合法的子网掩码。</p>
+<h1 id="3-IP相关功能在-Lwip-中的实现"><a href="#3-IP相关功能在-Lwip-中的实现" class="headerlink" title="3. IP相关功能在 Lwip 中的实现"></a>3. IP相关功能在 Lwip 中的实现</h1><h2 id="3-1-ip-hdr结构体简介"><a href="#3-1-ip-hdr结构体简介" class="headerlink" title="3.1 ip_hdr结构体简介"></a>3.1 ip_hdr结构体简介</h2><p>&emsp;&emsp;ip_hdr结构体就是IP首部的结构体，其定义如下：</p>
+<pre><code class="c">struct ip_hdr {
+  PACK_STRUCT_FLD_8(u8_t _v_hl);
+  PACK_STRUCT_FLD_8(u8_t _tos);
+  PACK_STRUCT_FIELD(u16_t _len);
+  PACK_STRUCT_FIELD(u16_t _id);
+  PACK_STRUCT_FIELD(u16_t _offset);
+  PACK_STRUCT_FLD_8(u8_t _ttl);
+  PACK_STRUCT_FLD_8(u8_t _proto);
+  PACK_STRUCT_FIELD(u16_t _chksum);
+  PACK_STRUCT_FLD_S(ip4_addr_p_t src);
+  PACK_STRUCT_FLD_S(ip4_addr_p_t dest);
+} PACK_STRUCT_STRUCT;
+PACK_STRUCT_END</code></pre>
+<p>&emsp;&emsp;在源代码中包含了对每个元素的注释，结合注释和IP首部的格式，不难理解各元素所代表的的意义。需要注意的一点是，IP首部并不都是按字节定义数据的含义的，但是在<code>ip_hdr</code>结构体中，对部分字段进行了合并，方便了结构体定义。IP首部的版本和首部长度两个字段，其长度都是4位，并且位置相邻，因此在<code>ip_hdr</code>结构体总将这两个字段合并在一起，定义了一个8位的变量<code>_v_hl</code>，其中的”v”便是version，”hl”即head lenth。IP首部的3位标志字段和13位的片偏移字段则合并成一个16位的变量<code>_offset</code>。剩余变量则都与IP首部的字段一一对应，小伙伴们可自行翻阅源码，并对照IP数据报格式自行理解。</p>
+<p>&emsp;&emsp;从结构体定义来看，结构体中并没有可选项相关的元素，但这并不意味着Lwip没有支持可选项的能力。</p>
+<h2 id="3-2-Lwip中IP层数据发送流程简介"><a href="#3-2-Lwip中IP层数据发送流程简介" class="headerlink" title="3.2 Lwip中IP层数据发送流程简介"></a>3.2 Lwip中IP层数据发送流程简介</h2><p>&emsp;&emsp;Lwip中，IP层对发送数据的处理依次经过了<code>ip4_output</code>、<code>ip4_output_if</code>、<code>ip4_output_if_opt</code>、<code>ip4_output_if_opt_src</code>四个函数。<code>ip4_output</code>函数中，根据目的IP地址确定了该IP数据报的发送路径（即通过哪个网卡发送该数据报），并将传入的数据和网卡信息传递给函数<code>ip4_output_if</code>。在当前定义中，函数<code>ip4_output_if</code>没有做任何操作，直接将数据传送给函数<code>ip4_output_if_opt</code>，<code>ip4_output_if_opt</code>比<code>ip4_output_if</code>多出的两个形参<code>void *ip_options</code>和<code>u16_t optlen</code>分别传入了实参空指针和0。函数<code>ip4_output_if_opt</code>中根据选定的网卡确定了源地址，然后再次将所有数据传递给函数<code>ip4_output_if_opt_src</code>。函数<code>ip4_output_if_opt_src</code>根据传入的信息，完成IP报文首部的填充，然后调用网卡的发送函数，将IP数据报交由链路层处理。每个函数的具体实现，请小伙伴们自行阅读源码。</p>
+<p>&emsp;&emsp;接下来讨论下Lwip对IP首部可选项的处理。首先可以确定的是，Lwip是有处理可选项的能力的，前面提到<code>ip4_output_if_opt</code>比<code>ip4_output_if</code>多出两个形参，这连个形参实际上就是指可选项的内容和长度，在传入实参时直接传入了空指针和0，也就是说所有以函数<code>ip4_output</code>为处理起点的IP数据报，都是没有可选项的。如果想要发送一个首部含有可选项的IP数据报，则上层协议需要调用函数<code>ip4_output_if_opt</code>，而以该函数位处理起点的IP数据报，就跳过了查找发送路径这一功能。在源码”ip4.h”中，有一句注释“Currently, the function ip_output_if_opt() is only used with IGMP ”，据此推测，只有IGMP协议在发送IP数据报时调用的是函数<code>ip4_output_if_opt</code>，而其他协议则调用<code>ip4_output</code>函数，至于该推测是否准确，需要分析上层协议的源码，本文不再进一步扩展。</p>
+<p>&emsp;&emsp;首部检验和的计算方法。关于首部检验和的计算方法，不同的参考资料中描述有所不同。也许是因为协议发展过程中有所改变，也许是有些书籍中出现了谬误，也许是这些不同的描述本质上是一样的（这设计到比较深奥的数学知识，已经超出了我的能力范畴），因此吧检验的介绍放到源码分析的部分来讲解，结合代码中的实际操作，确保给小伙伴们呈现除一个正确的计算方法。首部检验和的计算，属于IP首部填充的一部分，其源码实现包含在<code>ip4_output_if_opt_src</code>中。计算的方法是，定义一个32位的变量<code>chk_sum</code>并初始化为0，然后将IP首部的内容按16位字相加，注意此处IP首部的检验和字段本身无需参与运算，然后将得到的结果进行如下处理：</p>
+<pre><code class="c">chk_sum = (chk_sum &gt;&gt; 16) + (chk_sum &amp; 0xFFFF);
+chk_sum = (chk_sum &gt;&gt; 16) + chk_sum;
+chk_sum = ~chk_sum;</code></pre>
+<p>最终得到的结果即为检验和，将其填入检验和字段即可。</p>
+<h2 id="3-3-Lwip中接收数据处理简介"><a href="#3-3-Lwip中接收数据处理简介" class="headerlink" title="3.3 Lwip中接收数据处理简介"></a>3.3 Lwip中接收数据处理简介</h2><p>&emsp;&emsp;Lwip中IP层处理接收数据的函数是<code>ip4_input</code>。该函数首先对IP数据报的合法性进行检查，包括IP版本、检验和、长度等信息的检查，然后判断IP数据报是否确实是却要本机接收的，如果满足以上条件，则根据IP首部中的协议字段，将IP数据报转发给对应的上层协议进行处理。</p>
+<h1 id="4-参考资料"><a href="#4-参考资料" class="headerlink" title="4 参考资料"></a>4 参考资料</h1><ol>
+<li>RT-TREAD Lwip组件v2.0.2源码；</li>
+<li>《TCP-IP详解卷一：协议》；</li>
+<li>《TCP/IP路由技术（第一卷）（第二版）》。</li>
+</ol>
+<blockquote>
+<p>  [1] ICMP 和 IGMP 与IP同样属于网络层，但是因为其数据也需要以IP数据报的格式传输，所以也可以看做是IP的上层协议。<br>  [2] 网络号不能为全0或全1。</p>
+</blockquote>
+</body>
+
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls"
+                data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+            <ul id="audio-list" style="display:none">
+                
+                
+                <li title='0' data-url='/statics/beishang.mp3'></li>
+                
+                    
+                
+                <li title='1' data-url='/statics/shiqu.mp3'></li>
+                
+                    
+                
+                <li title='2' data-url='/statics/bancheng.mp3'></li>
+                
+                    
+                
+                <li title='3' data-url='/statics/mingtian.mp3'></li>
+                
+                    
+                
+                <li title='4' data-url='/statics/qinghuaci.mp3'></li>
+                
+                    
+                
+                <li title='5' data-url='/statics/xiaochou.mp3'></li>
+                
+                    
+            </ul>
+            
+            
+            
+            <div id="vcomments"></div>
+            
+        </div>
+        <div class="sidebar">
+            <div class="box animated fadeInRight">
+                <div class="subbox">
+                    <img src="/img/touxiang.jpg" height=300 width=300></img>
+                    <p>何苦争锋</p>
+                    <span>成败尽付笑谈中，何苦劳神与争锋。</span>
+					 <dl>
+						<li><a href="https://github.com/hekuzhengfeng" target="_blank"><center>GitHub</center></a></li>
+						<li><a href="https://gitee.com/hekuzhengfeng" target="_blank"><center>Gitee</center></a></li>
+						<li><a href="mailto:hekuzhengfeng@outlook.com" target="_blank"><center>E-mail</center></a></li>
+					</dl>
+						<li><a href="" target="_blank"><center></center></a></li>
+						<li><a href="https://gitee.com/hekuzhengfeng" target="_blank"><center></center></a></li>
+						<li><a href="mailto:hekuzhengfeng@outlook.com" target="_blank"><center></center></a></li>
+					</dl>
+                </div>
+                <ul>
+                    <li><a href="/">7 <p>文章</p></a></li>
+                    <li><a href="/categories">5 <p>分类</p></a></li>
+                    <li><a href="/tags">12 <p>标签</p></a></li>
+                </ul>
+            </div>
+            
+            
+            
+            <div class="box sticky animated fadeInRight faster">
+                <div id="toc" class="subbox">
+                    <h4>目录</h4>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-IP的背景"><span class="toc-number">1.</span> <span class="toc-text">1. IP的背景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-IP基础知识介绍"><span class="toc-number">2.</span> <span class="toc-text">2. IP基础知识介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-IP数据报的格式"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 IP数据报的格式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-1-版本"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1 版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-2-首部长度"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2 首部长度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-3-服务类型（TOS）"><span class="toc-number">2.1.3.</span> <span class="toc-text">2.1.3 服务类型（TOS）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-4-总长度"><span class="toc-number">2.1.4.</span> <span class="toc-text">2.1.4 总长度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-5-标识"><span class="toc-number">2.1.5.</span> <span class="toc-text">2.1.5 标识</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-6-标志"><span class="toc-number">2.1.6.</span> <span class="toc-text">2.1.6 标志</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-7-生存时间（TTL）"><span class="toc-number">2.1.7.</span> <span class="toc-text">2.1.7 生存时间（TTL）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-8-协议"><span class="toc-number">2.1.8.</span> <span class="toc-text">2.1.8 协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-9-首部检验和"><span class="toc-number">2.1.9.</span> <span class="toc-text">2.1.9 首部检验和</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-10-源地址和目的地址"><span class="toc-number">2.1.10.</span> <span class="toc-text">2.1.10 源地址和目的地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-11-可选项"><span class="toc-number">2.1.11.</span> <span class="toc-text">2.1.11 可选项</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-IP地址基础知识"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 IP地址基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-1-IP地址的点分十进制表示方法"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1 IP地址的点分十进制表示方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-2-网络号、主机号和子网号"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2 网络号、主机号和子网号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-3-IP地址的分类"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.2.3 IP地址的分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-4-子网掩码"><span class="toc-number">2.2.4.</span> <span class="toc-text">2.2.4 子网掩码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-IP相关功能在-Lwip-中的实现"><span class="toc-number">3.</span> <span class="toc-text">3. IP相关功能在 Lwip 中的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-ip-hdr结构体简介"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 ip_hdr结构体简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-Lwip中IP层数据发送流程简介"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 Lwip中IP层数据发送流程简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-Lwip中接收数据处理简介"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 Lwip中接收数据处理简介</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-参考资料"><span class="toc-number">4.</span> <span class="toc-text">4 参考资料</span></a></li></ol>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+
+    </div>
+</div>
+    <div id="back-to-top" class="animated fadeIn faster">
+        <div class="flow"></div>
+        <span class="percentage animated fadeIn faster">0%</span>
+        <span class="iconfont icon-top02 animated fadeIn faster"></span>
+    </div>
+</body>
+<footer>
+    <p class="copyright" id="copyright">
+        &copy; 2021
+        <span class="gradient-text">
+            何苦争锋
+        </span>.
+        Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a>
+        Theme
+        <span class="gradient-text">
+            <a href="https://github.com/TriDiamond/hexo-theme-obsidian" title="Obsidian" target="_blank" rel="noopener">Obsidian</a>
+        </span>
+        <small><a href="https://github.com/TriDiamond/hexo-theme-obsidian/blob/master/CHANGELOG.md" title="v1.4.4" target="_blank" rel="noopener">v1.4.4</a></small>
+    </p>
+</footer>
+
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script>
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+      preferredFont: "TeX",
+      availableFonts: ["STIX", "TeX"],
+      linebreaks: {
+        automatic: true
+      },
+      EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"]
+      ],
+      processEscapes: true,
+      ignoreClass: "tex2jax_ignore|dno",
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      noUndefined: {
+        attributes: {
+          mathcolor: "red",
+          mathbackground: "#FFEEEE",
+          mathsize: "90%"
+        }
+      },
+      Macros: {
+        href: "{}"
+      }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script>
+  function initialMathJax() {
+    MathJax.Hub.Queue(function () {
+      var all = MathJax.Hub.getAllJax(),
+        i;
+      // console.log(all);
+      for (i = 0; i < all.length; i += 1) {
+        console.log(all[i].SourceElement().parentNode)
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  }
+
+  function reprocessMathJax() {
+    if (typeof MathJax !== 'undefined') {
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
+  }
+</script>
+
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/obsidian.js"></script>
+<script src="/js/jquery.truncate.js"></script>
+<script src="/js/search.js"></script>
+
+
+<script src="//cdn.bootcss.com/typed.js/2.0.10/typed.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script>
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+
+
+<script src="https://cdn.bootcss.com/codemirror/5.48.4/codemirror.min.js"></script>
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/javascript/javascript.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/css/css.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/xml/xml.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/htmlmixed/htmlmixed.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/clike/clike.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/php/php.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/shell/shell.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/python/python.min.js"></script>
+
+
+
+
+    
+<script src="/js/busuanzi.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            if ($('span[id^="busuanzi_"]').length) {
+                initialBusuanzi();
+            }
+        });
+    </script>
+
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/default-skin/default-skin.min.css">
+
+
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<script>
+    function initialTyped () {
+        var typedTextEl = $('.typed-text');
+        if (typedTextEl && typedTextEl.length > 0) {
+            var typed = new Typed('.typed-text', {
+                strings: ["成败尽付笑谈中，何苦劳神与争锋。", "我只想成为更好的自己，无意与他人争锋。"],
+                typeSpeed: 90,
+                loop: true,
+                loopCount: Infinity,
+                backSpeed: 20,
+            });
+        }
+    }
+
+    if ($('.article-header') && $('.article-header').length) {
+        $(document).ready(function () {
+            initialTyped();
+        });
+    }
+</script>
+
+
+    
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+    <script>
+
+        var valine = new Valine();
+
+        function initValine(path) {
+            if (!path) path = window.location.pathname;
+            let language = 'zh-CN';
+            if (!language) {
+                language = 'en';
+            } else {
+                language = language.toLowerCase();
+            }
+            valine.init({
+                el: '#vcomments',
+                appId: 'O9tcndGBPvf1Ftl98yMpoSJG-gzGzoHsz',
+                appKey: 'z9MlP4K2ROAyJsjhscimkcG3',
+                notify: 'false',
+                verify: 'false',
+                avatar: 'mp',
+                placeholder: 'Leave your throughs behind~',
+                visitor: 'true',
+                path: path,
+                lang: language
+            });
+        }
+
+        $(document).ready(function () {
+            initValine();
+        });
+    </script>
+
+
+
+</html>
