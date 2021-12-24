@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>基于STM32CubeIDE实现编译版本号自动升级功能</title>
+      <link href="2021/12/24/%E5%9F%BA%E4%BA%8ESTM32CubeIDE%E5%AE%9E%E7%8E%B0%E7%BC%96%E8%AF%91%E7%89%88%E6%9C%AC%E5%8F%B7%E8%87%AA%E5%8A%A8%E5%8D%87%E7%BA%A7%E5%8A%9F%E8%83%BD/"/>
+      <url>2021/12/24/%E5%9F%BA%E4%BA%8ESTM32CubeIDE%E5%AE%9E%E7%8E%B0%E7%BC%96%E8%AF%91%E7%89%88%E6%9C%AC%E5%8F%B7%E8%87%AA%E5%8A%A8%E5%8D%87%E7%BA%A7%E5%8A%9F%E8%83%BD/</url>
+      
+        <content type="html"><![CDATA[<body><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1></body><p>&emsp;&emsp;软件的版本号通常包含主版本号、子版本号、修正版本号和编译版本号，本文介绍基于STM32CubeIDE实现编译版本号自动升级的方法，即每次编译程序都自动将编译版本号加1。</p><body><h1 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h1><p>&emsp;&emsp;在C语言代码中，版本号可以通过宏定义实现，可以直接定义完整的版本号，也可以将版本号的几个部分分开定义，通过更改宏定义的方式即可更改程序版本号。实现自动升级编译版本号的原理，就是将版本号的几个部分分开定义并单独放置到一个头文件中，每次编译程序之前，先调用一个文本处理工具，该文本处理工具读取版本号所在的头文件，识别编译版本号并将编译版本号加1，然后将修改后的内容回写到头文件中，最后对源代码进行编译链接。</p><h1 id="具体实现方法"><a href="#具体实现方法" class="headerlink" title="具体实现方法"></a>具体实现方法</h1><h2 id="文本处理工具"><a href="#文本处理工具" class="headerlink" title="文本处理工具"></a>文本处理工具</h2><p>&emsp;&emsp;要实现自动升级编译版本号的功能，首先需要一个文本处理工具，该工具需要高度定制化的功能，即读取头文件、识别并修改编译版本号。作为程序猿，大家不妨自己动手code一个文本处理工具，当然也可以直接点击链接下载现成的<a href="https://download.csdn.net/download/qq_34156419/70148038" target="_blank" rel="noopener">专用文本处理工具</a>。</p><h2 id="编译版本号的宏定义"><a href="#编译版本号的宏定义" class="headerlink" title="编译版本号的宏定义"></a>编译版本号的宏定义</h2><p>&emsp;&emsp;如果大家使用自己制作的文本处理工具，宏定义能满足各自的文本处理工具的识别、修改要求即可。</p><p>&emsp;&emsp;如果大家下载了现成的文本处理工具，则必须按照<code>#define BUILD_NUMBER        6</code>的格式进行宏定义，注意样例中6是版本号，是文本处理工具要修改的部分，其他部分是文本处理工具识别编译版本号的格式依据，版本号可以自行预设任意的自然数，其他部分则必须与样例保持一致。</p><h2 id="自动调用文本处理工具"><a href="#自动调用文本处理工具" class="headerlink" title="自动调用文本处理工具"></a>自动调用文本处理工具</h2><p>&emsp;&emsp;最后一步就是设置好每次编译代码之前自动调用该文本处理工具。</p><p>&emsp;&emsp;首先将下载好的文本处理工具放到工程文件夹下的“Debug”目录下，注意改目录下是否有makefile，如果没有，应找到makefile并将文本处理工具与makefile放置在同已文件夹下。然后依次点击Project -&gt; Properties -&gt; C/C++ Build -&gt; Settings -&gt; Build Steps，在 Pre-build steps中的Command 中输入“autoVersion.exe ../Inc/version.h”，如下图所示。其中“autoVersion.exe”是文本处理工具的文件名，“../Inc/version.h”是编译版本号所在的头文件相对于文本处理工具的相对路径，也可以用该头文件的绝对路径。然后保存配置即可。</p><center><img src="http://gitee.com/hekuzhengfeng/pictures/raw/master/pic/Snipaste_2021-12-24_21-20-11.png"></center><h2 id="验证功能"><a href="#验证功能" class="headerlink" title="验证功能"></a>验证功能</h2><p>&emsp;&emsp;编译程序，观察控制台输出，如下图所示是正常的运行结果。</p><center><img src="http://gitee.com/hekuzhengfeng/pictures/raw/master/pic/Snipaste_2021-12-24_21-29-34.png")></center><p>&emsp;&emsp;编译完成后，观察宏定义是否改变。</p><h2 id="提醒"><a href="#提醒" class="headerlink" title="提醒"></a>提醒</h2><p>&emsp;&emsp;<strong>建议关闭下载程序前自动编译的功能。</strong></p><h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>&emsp;&emsp;本文介绍了基于STM32CubeIDE实现自动升级编译版本号的方法，其他集成编译环境如RT-Thread Studio等，可能也可以实现该功能，大家可以自行探索。</p></body>]]></content>
+      
+      
+      <categories>
+          
+          <category> 嵌入式 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> stm32 </tag>
+            
+            <tag> STM32CubeIDE </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>IP报文基础及其在Lwip的实现</title>
       <link href="2021/08/20/IP%E6%8A%A5%E6%96%87%E5%9F%BA%E7%A1%80%E5%8F%8A%E5%85%B6%E5%9C%A8Lwip%E7%9A%84%E5%AE%9E%E7%8E%B0/"/>
       <url>2021/08/20/IP%E6%8A%A5%E6%96%87%E5%9F%BA%E7%A1%80%E5%8F%8A%E5%85%B6%E5%9C%A8Lwip%E7%9A%84%E5%AE%9E%E7%8E%B0/</url>
